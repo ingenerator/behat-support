@@ -1,0 +1,37 @@
+{
+  "name": "ingenerator/behat-support",
+  "description": "Various support functions and classes for behat testing",
+  "homepage": "https://github.com/ingenerator/behat-support",
+  "type": "library",
+  "license": "BSD-3-Clause",
+  "authors": [
+    {
+      "name": "Andrew Coulton",
+      "email": "andrew@ingenerator.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php": "^5.5||^7.0"
+  },
+  "require-dev": {
+  },
+  "support": {
+    "source": "https://github.com/ingenerator/behat-support/",
+    "issues": "https://github.com/ingenerator/behat-support/issues"
+  },
+  "autoload": {
+    "psr-4": {
+      "Ingenerator\\BehatSupport\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "test\\Ingenerator\\BehatSupport\\": "test/"
+    }
+  },
+  "config": {
+    "bin-dir": "bin",
+    "preferred-install": "dist"
+  }
+}
