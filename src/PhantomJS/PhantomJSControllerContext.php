@@ -7,6 +7,8 @@
 
 namespace Ingenerator\BehatSupport\PhantomJS;
 
+use Behat\Behat\Event\BaseScenarioEvent;
+use Behat\Behat\Event\OutlineExampleEvent;
 use Behat\Behat\Event\ScenarioEvent;
 use Behat\Behat\Event\StepEvent;
 use Behat\MinkExtension\Context\RawMinkContext;
@@ -48,17 +50,17 @@ class PhantomJSControllerContext extends RawMinkContext
     }
 
     /**
-     * @param ScenarioEvent $event
+     * @param BaseScenarioEvent $event
      *
      * @BeforeScenario @javascript
      * @throws Exception
      * @return void
      */
-    public function onBeforeJavascriptScenario(ScenarioEvent $event)
+    public function onBeforeJavascriptScenario(BaseScenarioEvent $event)
     {
         /** @var Process $phantom_process */
         static $phantom_process;
-
+        
         if ($phantom_process) {
             if ( ! $phantom_process->isRunning()) {
                 throw new ProcessFailedException($phantom_process);
