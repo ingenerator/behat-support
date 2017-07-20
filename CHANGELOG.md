@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+* Add JSEventWaiter to watch for javascript events
 * Add a PhantomJSControllerContext for automatically starting / stopping phantomjs when required
 * Add Spin::fn for retrying assertions
 * Add DateParam::parse for parsing relative date strings from features
