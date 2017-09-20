@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+* Update JSEventWaiter to support `window` and `document` as element selectors
 * Add MinkResourceDownloader
 * Add JSEventWaiter to watch for javascript events
 * Add a PhantomJSControllerContext for automatically starting / stopping phantomjs when required

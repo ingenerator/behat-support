@@ -101,7 +101,7 @@ JS;
             static::BIND_SCRIPT,
             [
                 'BIND_HANDLE'  => $this->bound_event_handles[$event],
-                'SELECTOR'     => json_encode($selector),
+                'SELECTOR'     => $this->encodeSelector($selector),
                 'BIND_EVENT'   => json_encode($event),
                 'CAPTURE_FUNC' => $capture_func ?: 'function () { return true; }'
             ]
@@ -110,6 +110,25 @@ JS;
         $result = $this->mink->evaluateScript($script);
         if ( ! $result['ok']) {
             throw new \RuntimeException('Could not bind to `'.$event.'`: '.$result['error']);
+        }
+    }
+
+    /**
+     * Convert an element selector to a javascript parameter - `document`, `window` or otherwise an
+     * encoded string eg `"#element"`.
+     *
+     * @param string $selector
+     *
+     * @return string
+     */
+    protected function encodeSelector($selector)
+    {
+        switch ($selector) {
+            case 'document':
+            case 'window':
+                return $selector;
+            default:
+                return json_encode($selector);
         }
     }
 
