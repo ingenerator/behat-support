@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+* Add PrintDebugTrait as a little BC shorthand for printing stuff from behat 
+  contexts.
 * Replace PhantomJSControllerContext with PhantomJSControllerExtension - does
   the same job, but as an extension.
 * Add a set of useful extensions for bootstrapping, saving failing pages,
