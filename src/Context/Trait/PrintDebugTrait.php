@@ -4,7 +4,7 @@
  * @licence   proprietary
  */
 
-namespace Ingenerator\BehatSupport\Extension;
+namespace Ingenerator\BehatSupport\Context\Trait;
 
 
 /**
