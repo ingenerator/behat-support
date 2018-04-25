@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 0.1.0 (2018-04-25)
+
 * Add an element wrapper for the v4.x version of select2/select2 - see Select2v4
 * Update JSEventWaiter to support `window` and `document` as element selectors
 * Add MinkResourceDownloader
