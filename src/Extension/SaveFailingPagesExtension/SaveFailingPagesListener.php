@@ -99,7 +99,7 @@ class SaveFailingPagesListener implements EventSubscriberInterface
             return (bool) $driver->getClient()->getRequest();
         }
 
-        return FALSE;
+        return TRUE;
     }
 
     protected function getOutputFilename(AfterStepTested $event)

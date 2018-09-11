@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+* Fix session-start detection for SaveFailingPages listener with a non-browserkit 
+  session : was incorrectly reporting session not started when it should be started.
 * Add PrintDebugTrait as a little BC shorthand for printing stuff from behat 
   contexts.
 * Replace PhantomJSControllerContext with PhantomJSControllerExtension - does
