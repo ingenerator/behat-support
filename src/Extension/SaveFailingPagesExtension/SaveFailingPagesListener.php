@@ -119,6 +119,11 @@ class SaveFailingPagesListener implements EventSubscriberInterface
      */
     protected function writeFile($file, $content)
     {
+        if (empty($content)) {
+            $this->output->writeln('<comment>Warning: No content to write to '.$file.'</comment>');
+            return;
+        }
+
         $path = dirname($file);
         if ( ! is_dir($path)) {
             mkdir($path, 0777, TRUE);
