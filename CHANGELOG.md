@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+* Fix bug where SaveFailingPagesListener threw a fatal exception if asked to write a
+  file with no content (e.g. because of a white-page-500 served by the app) masking the
+  actual failure.
+
 ## 0.2.0 (2018-09-18)
 
 * Fix session-start detection for SaveFailingPages listener with a non-browserkit 
