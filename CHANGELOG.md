@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 0.2.1 (2019-01-31)
+
 * Fix bug where SaveFailingPagesListener threw a fatal exception if asked to write a
   file with no content (e.g. because of a white-page-500 served by the app) masking the
   actual failure.
