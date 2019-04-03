@@ -40,7 +40,7 @@ class SaveFailingPagesExtension implements Extension
     public function load(ContainerBuilder $container, array $config)
     {
         $base_path             = $container->getParameter('paths.base');
-        $config['output_path'] = str_replace('%paths.base%', $base_path, $config['output_path']);
+        $config['output_path'] = \str_replace('%paths.base%', $base_path, $config['output_path']);
 
         $this->loadListener($container, $config);
     }

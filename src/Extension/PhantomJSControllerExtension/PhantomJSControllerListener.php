@@ -68,16 +68,16 @@ class PhantomJSControllerListener implements EventSubscriberInterface
         }
 
         $phantom_output = $this->phantom_process->getIncrementalOutput();
-        $log_entries    = preg_split('/^(?=\[[A-Z]+ - [0-9]{4})/m', $phantom_output, -1, PREG_SPLIT_NO_EMPTY);
+        $log_entries    = \preg_split('/^(?=\[[A-Z]+ - [0-9]{4})/m', $phantom_output, -1, PREG_SPLIT_NO_EMPTY);
         $errors         = [];
         foreach ($log_entries as $log_entry) {
-            if (preg_match('/^\[(ERROR|WARN)/', $log_entry)) {
+            if (\preg_match('/^\[(ERROR|WARN)/', $log_entry)) {
                 $errors[] = $log_entry;
             }
         }
 
         if ($errors) {
-            array_unshift($errors, '<error>PhantomJS logged errors during '.$event->getStep()->getText().':</error>');
+            \array_unshift($errors, '<error>PhantomJS logged errors during '.$event->getStep()->getText().':</error>');
             $this->output->writeln($errors);
         }
     }
@@ -112,7 +112,7 @@ class PhantomJSControllerListener implements EventSubscriberInterface
             }
         } else {
             $this->phantom_process = $this->startPhantom();
-            register_shutdown_function(function () { $this->terminatePhantom(); });
+            \register_shutdown_function(function () { $this->terminatePhantom(); });
         }
     }
 
@@ -132,7 +132,7 @@ class PhantomJSControllerListener implements EventSubscriberInterface
         $phantom_process->start();
 
         // Wait to be sure it launches
-        sleep(5);
+        \sleep(5);
         if ( ! $phantom_process->isRunning()) {
             throw new ProcessFailedException($phantom_process);
         }

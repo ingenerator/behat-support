@@ -93,13 +93,13 @@ class Spin
         $last_exception = NULL;
         do {
             try {
-                return call_user_func($this->assertion);
+                return \call_user_func($this->assertion);
             } catch (\Behat\Mink\Exception\UnsupportedDriverActionException $e) {
                 throw $e;
             } catch (\Exception $e) {
                 $last_exception = $e;
             }
-            usleep($this->delay_ms * 1000);
+            \usleep($this->delay_ms * 1000);
         } while ($should_retry());
 
         throw $last_exception;
@@ -114,11 +114,11 @@ class Spin
      */
     public function forSeconds($seconds)
     {
-        $end_by = microtime(TRUE) + $seconds;
+        $end_by = \microtime(TRUE) + $seconds;
 
         return $this->retryAssertionWhile(
             function () use ($end_by) {
-                return microtime(TRUE) < $end_by;
+                return \microtime(TRUE) < $end_by;
             }
         );
     }

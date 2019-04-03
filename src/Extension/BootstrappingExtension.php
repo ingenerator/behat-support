@@ -37,8 +37,8 @@ class BootstrappingExtension implements Extension
     public function load(ContainerBuilder $container, array $config)
     {
         $base_path = $container->getParameter('paths.base');
-        $bootstrap = str_replace('%paths.base%', $base_path, $config['bootstrap_path']);
-        if ( ! file_exists($bootstrap)) {
+        $bootstrap = \str_replace('%paths.base%', $base_path, $config['bootstrap_path']);
+        if ( ! \file_exists($bootstrap)) {
             throw new \InvalidArgumentException('No bootstrap file in '.$bootstrap);
         }
         require_once($bootstrap);
