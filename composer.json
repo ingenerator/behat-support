@@ -12,11 +12,11 @@
   ],
   "minimum-stability": "stable",
   "require": {
-    "php": "^5.5||^7.0",
+    "php": "^7.2",
     "behat/behat": "^3.4"
   },
   "require-dev": {
-    "phpunit/phpunit": "^4.8"
+    "phpunit/phpunit": "^7.0"
   },
   "support": {
     "source": "https://github.com/ingenerator/behat-support/",
