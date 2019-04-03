@@ -8,7 +8,7 @@ use Ingenerator\BehatSupport\Assertion\Spin;
 /**
  * @author    Andrew Coulton <andrew@ingenerator.com>
  */
-class SpinTest extends \PHPUnit_Framework_TestCase
+class SpinTest extends \PHPUnit\Framework\TestCase
 {
     public function test_it_returns_instance_from_static_constructor()
     {

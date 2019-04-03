@@ -9,7 +9,7 @@ namespace test\Ingenerator\BehatSupport\Param;
 
 use Ingenerator\BehatSupport\Param\DateParam;
 
-class DateParamTest extends \PHPUnit_Framework_TestCase
+class DateParamTest extends \PHPUnit\Framework\TestCase
 {
 
     public function test_it_parses_string_to_date_time_immutable()
