@@ -160,8 +160,8 @@ class SpinTest extends \PHPUnit\Framework\TestCase
         $spin->forAttempts($retry_count);
         $end    = \microtime(TRUE);
         $ran_ms = 1000 * ($end - $start);
-        $this->assertGreaterThan($min, $ran_ms, 'Should be at least 20ms to run');
-        $this->assertLessThan($max, $ran_ms, 'Should run in less than 30ms');
+        $this->assertGreaterThan($min, $ran_ms, 'Should be at least '.$min.'ms to run');
+        $this->assertLessThan($max, $ran_ms, 'Should run in less than '.$max.'ms');
     }
 
 }
