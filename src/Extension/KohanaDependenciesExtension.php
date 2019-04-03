@@ -35,7 +35,7 @@ class KohanaDependenciesExtension implements Extension
 
     public function load(ContainerBuilder $container, array $config)
     {
-        if ( ! class_exists('\Dependencies')) {
+        if ( ! \class_exists('\Dependencies')) {
             throw new \RuntimeException('No `\Dependencies` class found : is Kohana bootstrapped?');
         }
         $container->set('kohana.dependencies', \Dependencies::instance());

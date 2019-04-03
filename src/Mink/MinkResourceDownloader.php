@@ -81,10 +81,10 @@ JS;
      */
     public function download($url, $local_path, $timeout_ms = 2000)
     {
-        $handle = uniqid('_dl_handle');
-        $script = strtr(
+        $handle = \uniqid('_dl_handle');
+        $script = \strtr(
             static::DL_SCRIPT,
-            ['RESOURCE_URL' => json_encode($url), 'HANDLER' => $handle]
+            ['RESOURCE_URL' => \json_encode($url), 'HANDLER' => $handle]
         );
         $this->mink->executeScript($script);
         if ( ! $this->mink->wait($timeout_ms, "window.$handle.isComplete();")) {
@@ -96,7 +96,7 @@ JS;
             throw new \RuntimeException('Error downloading '.$url.' : '.$result['error']);
         }
 
-        if ( ! file_put_contents($local_path, base64_decode($result['base64_content']))) {
+        if ( ! \file_put_contents($local_path, \base64_decode($result['base64_content']))) {
             throw new \RuntimeException('Could not save downloaded content to '.$local_path);
         }
     }

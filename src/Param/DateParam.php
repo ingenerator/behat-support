@@ -32,11 +32,11 @@ class DateParam
     {
         $relative_to = $relative_to ?: new \DateTimeImmutable('00:00:00');
 
-        if (in_array($string, ['today', 'Y-m-d'])) {
+        if (\in_array($string, ['today', 'Y-m-d'])) {
             return $relative_to;
         }
 
-        if ( ! preg_match(static::regex(), $string, $matches)) {
+        if ( ! \preg_match(static::regex(), $string, $matches)) {
             throw new \InvalidArgumentException('Invalid date specification string `'.$string.'`');
         };
 
@@ -49,7 +49,7 @@ class DateParam
             if ($component_match[0] === '(') {
                 // This is a relative date specification
                 $modifiers[$component] = $component_match;
-            } elseif (is_numeric($component_match)) {
+            } elseif (\is_numeric($component_match)) {
                 // Use the explicit date value
                 $base_date[$component] = $component_match;
             }
@@ -60,7 +60,7 @@ class DateParam
         foreach ($modifiers as $date_part => $modifier) {
             // modifier as `(d+4)`, `(m-3)`, etc
             $operator = $modifier[2];
-            $interval = new \DateInterval('P'.substr($modifier, 3, -1).strtoupper($date_part));
+            $interval = new \DateInterval('P'.\substr($modifier, 3, -1).\strtoupper($date_part));
             $date     = ($operator === '+') ? $date->add($interval) : $date->sub($interval);
         }
 
@@ -85,7 +85,7 @@ class DateParam
                     ."\\({$part}[+-][0-9]+\\)" // (d+3) for +3 days
                     .')';
             }
-            $regex = '/^'.implode('-', $parts).'$/';
+            $regex = '/^'.\implode('-', $parts).'$/';
         }
 
         return $regex;

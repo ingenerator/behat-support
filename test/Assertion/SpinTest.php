@@ -8,7 +8,7 @@ use Ingenerator\BehatSupport\Assertion\Spin;
 /**
  * @author    Andrew Coulton <andrew@ingenerator.com>
  */
-class SpinTest extends \PHPUnit_Framework_TestCase
+class SpinTest extends \PHPUnit\Framework\TestCase
 {
     public function test_it_returns_instance_from_static_constructor()
     {
@@ -156,23 +156,23 @@ class SpinTest extends \PHPUnit_Framework_TestCase
      */
     protected function assertRetryExecutionTimeBetweenMs($spin, $retry_count, $min, $max)
     {
-        $start = microtime(TRUE);
+        $start = \microtime(TRUE);
         $spin->forAttempts($retry_count);
-        $end    = microtime(TRUE);
+        $end    = \microtime(TRUE);
         $ran_ms = 1000 * ($end - $start);
-        $this->assertGreaterThan($min, $ran_ms, 'Should be at least 20ms to run');
-        $this->assertLessThan($max, $ran_ms, 'Should run in less than 30ms');
+        $this->assertGreaterThan($min, $ran_ms, 'Should be at least '.$min.'ms to run');
+        $this->assertLessThan($max, $ran_ms, 'Should run in less than '.$max.'ms');
     }
 
 }
 
 
-if ( ! class_exists(\Behat\Mink\Exception\UnsupportedDriverActionException::class)) {
+if ( ! \class_exists(\Behat\Mink\Exception\UnsupportedDriverActionException::class)) {
     class FakeException extends \RuntimeException
     {
     }
 
-    class_alias(FakeException::class, \Behat\Mink\Exception\UnsupportedDriverActionException::class);
+    \class_alias(FakeException::class, \Behat\Mink\Exception\UnsupportedDriverActionException::class);
 }
 
 class StubUnsupportedDriverActionException extends \Behat\Mink\Exception\UnsupportedDriverActionException

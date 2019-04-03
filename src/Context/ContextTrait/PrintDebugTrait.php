@@ -18,7 +18,7 @@ trait PrintDebugTrait
 
     protected function printDebug($string)
     {
-        fwrite(STDOUT, "\n".$string."\n");
+        \fwrite(STDOUT, "\n".$string."\n");
     }
 
 }

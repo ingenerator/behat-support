@@ -83,7 +83,7 @@ class Select2v4
         foreach ($this->select->findAll('css', 'option') as $option) {
             /** @var NodeElement $option */
             if ($option->isSelected()) {
-                $results[$option->getValue()] = trim($option->getText());
+                $results[$option->getValue()] = \trim($option->getText());
             }
         }
 
@@ -97,7 +97,7 @@ class Select2v4
      */
     public function getRenderedSelections()
     {
-        return array_keys($this->listRenderedSelections($this->getComboBox()));
+        return \array_keys($this->listRenderedSelections($this->getComboBox()));
     }
 
     /**
@@ -107,7 +107,7 @@ class Select2v4
      */
     public function getRenderedSuggestions()
     {
-        return array_keys($this->listSearchSuggestions());
+        return \array_keys($this->listSearchSuggestions());
     }
 
     /**
@@ -125,7 +125,7 @@ class Select2v4
         }
         $selections = $this->listRenderedSelections($combo);
         if ( ! isset($selections[$caption])) {
-            throw new \InvalidArgumentException('No selection `'.$caption.'` in '.json_encode(array_keys($selections)));
+            throw new \InvalidArgumentException('No selection `'.$caption.'` in '.\json_encode(\array_keys($selections)));
         }
 
         $this->assert->elementExists('css', '.select2-selection__choice__remove', $selections[$caption])
@@ -159,9 +159,9 @@ class Select2v4
     protected function openSelect2()
     {
         $this->session->executeScript(
-            sprintf(
+            \sprintf(
                 "\$(%s).select2('open');",
-                json_encode('#'.$this->select->getAttribute('id'))
+                \json_encode('#'.$this->select->getAttribute('id'))
             )
         );
 
@@ -188,7 +188,7 @@ class Select2v4
                 $choices = $this->listSearchSuggestions();
                 if ( ! isset($choices[$result_caption])) {
                     throw new ExpectationException(
-                        'Could not find a select 2 choice `'.$result_caption.'` in '.json_encode(array_keys($choices)),
+                        'Could not find a select 2 choice `'.$result_caption.'` in '.\json_encode(\array_keys($choices)),
                         $this->session->getDriver()
                     );
                 }
@@ -233,7 +233,7 @@ class Select2v4
         foreach ($choices as $choice) {
             /** @var NodeElement $choice */
             // Can't use getText as there's no guarantee these elements will be visible e.g. if control is hidden
-            $text              = trim(strip_tags($choice->getHtml()), "× \t\n\r");
+            $text              = \trim(\strip_tags($choice->getHtml()), "× \t\n\r");
             $selections[$text] = $choice;
         }
 

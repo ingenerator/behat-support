@@ -9,7 +9,7 @@ namespace test\Ingenerator\BehatSupport\Param;
 
 use Ingenerator\BehatSupport\Param\DateParam;
 
-class DateParamTest extends \PHPUnit_Framework_TestCase
+class DateParamTest extends \PHPUnit\Framework\TestCase
 {
 
     public function test_it_parses_string_to_date_time_immutable()
@@ -39,7 +39,7 @@ class DateParamTest extends \PHPUnit_Framework_TestCase
      */
     public function test_it_parses_current_date_relative_to_today_by_default($string)
     {
-        $this->assertSame(date('Y-m-d 00:00:00'), DateParam::parse($string)->format('Y-m-d H:i:s'));
+        $this->assertSame(\date('Y-m-d 00:00:00'), DateParam::parse($string)->format('Y-m-d H:i:s'));
     }
 
     /**

@@ -44,7 +44,7 @@ class SaveFailingPagesListener implements EventSubscriberInterface
     {
         $this->mink      = $mink;
         $this->output    = $output;
-        $this->base_path = str_replace('//', '/', $base_path.'/'.date('Y-m-d-H-i-s'));
+        $this->base_path = \str_replace('//', '/', $base_path.'/'.\date('Y-m-d-H-i-s'));
     }
 
     public static function getSubscribedEvents()
@@ -104,11 +104,11 @@ class SaveFailingPagesListener implements EventSubscriberInterface
 
     protected function getOutputFilename(AfterStepTested $event)
     {
-        return sprintf(
+        return \sprintf(
             '%s/%03d-%s-L%s',
             $this->base_path,
             ++$this->failure_index,
-            str_replace('/', '_', $event->getFeature()->getFile()),
+            \str_replace('/', '_', $event->getFeature()->getFile()),
             $event->getStep()->getLine()
         );
     }
@@ -124,12 +124,12 @@ class SaveFailingPagesListener implements EventSubscriberInterface
             return;
         }
 
-        $path = dirname($file);
-        if ( ! is_dir($path)) {
-            mkdir($path, 0777, TRUE);
+        $path = \dirname($file);
+        if ( ! \is_dir($path)) {
+            \mkdir($path, 0777, TRUE);
         }
 
-        if ( ! file_put_contents($file, $content)) {
+        if ( ! \file_put_contents($file, $content)) {
             throw new \RuntimeException('Couldn\'t write to '.$file);
         }
 

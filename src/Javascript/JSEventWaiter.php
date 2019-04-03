@@ -96,13 +96,13 @@ JS;
             throw new \InvalidArgumentException('Already bound to '.$event.' : cannot bind again');
         }
 
-        $this->bound_event_handles[$event] = uniqid('_event_'.$event);
-        $script                            = strtr(
+        $this->bound_event_handles[$event] = \uniqid('_event_'.$event);
+        $script                            = \strtr(
             static::BIND_SCRIPT,
             [
                 'BIND_HANDLE'  => $this->bound_event_handles[$event],
                 'SELECTOR'     => $this->encodeSelector($selector),
-                'BIND_EVENT'   => json_encode($event),
+                'BIND_EVENT'   => \json_encode($event),
                 'CAPTURE_FUNC' => $capture_func ?: 'function () { return true; }'
             ]
         );
@@ -128,7 +128,7 @@ JS;
             case 'window':
                 return $selector;
             default:
-                return json_encode($selector);
+                return \json_encode($selector);
         }
     }
 
