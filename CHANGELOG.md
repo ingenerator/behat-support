@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+* Explicitly start selenium to set the window size - fixes bug with latest mink which has
+  (in a minor version) changed the previous behavior that auto-started it on
+  `->getSession()`
+
 ## 1.0.0 (2019-04-03)
 
 * Ensure support for php7.2

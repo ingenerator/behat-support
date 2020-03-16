@@ -138,10 +138,10 @@ class PhantomJSControllerListener implements EventSubscriberInterface
         }
         $this->output->writeln('<comment>PhantomJS running as process '.$phantom_process->getPid().'</comment>');
 
-        // Set the window size
-        $this->mink
-            ->getSession('selenium2')
-            ->resizeWindow($this->options['window-width'], $this->options['window-height']);
+        // Set the window size - this has to start the session explicitly to do so
+        $selenium = $this->mink->getSession('selenium2');
+        $selenium->start();
+        $selenium->resizeWindow($this->options['window-width'], $this->options['window-height']);
 
         return $phantom_process;
     }
