@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 1.0.1 (2020-03-16)
+
 * Explicitly start selenium to set the window size - fixes bug with latest mink which has
   (in a minor version) changed the previous behavior that auto-started it on
   `->getSession()`
