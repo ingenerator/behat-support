@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 1.0.2 (2020-09-29)
+
+* Add BrowserResizeExtension to resize browser window, defaults to 1024x768
+
 ## 1.0.1 (2020-03-16)
 
 * Explicitly start selenium to set the window size - fixes bug with latest mink which has
