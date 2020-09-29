@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 1.0.3 (2020-09-29)
+
+* Remove incorrect license from docblocks
+
 ## 1.0.2 (2020-09-29)
 
 * Add BrowserResizeExtension to resize browser window, defaults to 1024x768
