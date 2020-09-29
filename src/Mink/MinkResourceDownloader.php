@@ -1,7 +1,6 @@
 <?php
 /**
  * @author    Andrew Coulton <andrew@ingenerator.com>
- * @licence   proprietary
  */
 
 namespace Ingenerator\BehatSupport\Mink;
