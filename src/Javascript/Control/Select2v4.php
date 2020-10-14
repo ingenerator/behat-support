@@ -11,6 +11,7 @@ use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Session;
 use Behat\Mink\WebAssert;
 use Ingenerator\BehatSupport\Assertion\Spin;
+use const JSON_PRETTY_PRINT;
 
 /**
  * Helper for the 4.x series of select2/select2
@@ -70,19 +71,60 @@ class Select2v4
     }
 
     /**
-     * @return string[] as key => value
+     * @param array $captions
      */
-    public function getSelectedOptions()
+    public function assertOnlyHasUnderlyingOptionsMatching(array $captions)
     {
-        $results = [];
-        foreach ($this->select->findAll('css', 'option') as $option) {
-            /** @var NodeElement $option */
-            if ($option->isSelected()) {
-                $results[$option->getValue()] = \trim($option->getText());
+        $found   = [];
+        $options = $this->listCurrentUnderlyingOptions();
+        foreach ($captions as $caption) {
+            foreach ($options as $index => $option) {
+                if (\preg_match('/'.\preg_quote($caption).'/', $option)) {
+                    unset($options[$index]);
+                    $found[$caption] = $option;
+                    break;
+                }
             }
         }
+        $diff = \array_filter(
+            [
+                'missing' => \array_diff($captions, \array_keys($found)),
+                'extra'   => $options,
+            ]
+        );
+        if ($diff) {
+            throw new \UnexpectedValueException(
+                "Available underlying <option> values do not match:\n".\json_encode(
+                    $diff,
+                    JSON_PRETTY_PRINT
+                )
+            );
+        }
+    }
 
-        return $results;
+    /**
+     * Wait for suggestions, then select the value with the given result caption
+     *
+     * @param string $result_caption
+     */
+    public function chooseResult($result_caption)
+    {
+        Spin::fn(
+            function () use ($result_caption) {
+                $choices = $this->listSearchSuggestions();
+                if ( ! isset($choices[$result_caption])) {
+                    throw new ExpectationException(
+                        'Could not find a select 2 choice `'.$result_caption.'` in '.\json_encode(
+                            \array_keys($choices)
+                        ),
+                        $this->session->getDriver()
+                    );
+                }
+                $choices[$result_caption]->click();
+            }
+        )
+            ->setDelayMs(500)
+            ->forAttempts(10);
     }
 
     /**
@@ -106,6 +148,36 @@ class Select2v4
     }
 
     /**
+     * @return string[] as key => value
+     */
+    public function getSelectedOptions()
+    {
+        $results = [];
+        foreach ($this->select->findAll('css', 'option') as $option) {
+            /** @var NodeElement $option */
+            if ($option->isSelected()) {
+                $results[$option->getValue()] = \trim($option->getText());
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * @return string[] as key => value
+     */
+    public function listCurrentUnderlyingOptions()
+    {
+        $results = [];
+        foreach ($this->select->findAll('css', 'option') as $option) {
+            /** @var NodeElement $option */
+            $results[$option->getValue()] = \trim($option->getText());
+        }
+
+        return $results;
+    }
+
+    /**
      * Remove a selected value from a multi-select by matching on the caption
      *
      * @param string $caption
@@ -120,11 +192,33 @@ class Select2v4
         }
         $selections = $this->listRenderedSelections($combo);
         if ( ! isset($selections[$caption])) {
-            throw new \InvalidArgumentException('No selection `'.$caption.'` in '.\json_encode(\array_keys($selections)));
+            throw new \InvalidArgumentException(
+                'No selection `'.$caption.'` in '.\json_encode(\array_keys($selections))
+            );
         }
 
         $this->assert->elementExists('css', '.select2-selection__choice__remove', $selections[$caption])
             ->click();
+    }
+
+    /**
+     * @param string $term
+     */
+    public function selectOnlyChoiceMatching($term)
+    {
+        $this->typeSearchTerm($term);
+        $this->waitForSuggestions();
+        $suggestions = $this->getRenderedSuggestions();
+        if (\count($suggestions) !== 1) {
+            throw new \UnexpectedValueException(
+                \sprintf(
+                    "Expected exactly one choice matching `%s`, got:\n%s",
+                    $term,
+                    \json_encode($suggestions, JSON_PRETTY_PRINT)
+                )
+            );
+        }
+        $this->chooseResult(\array_shift($suggestions));
     }
 
     /**
@@ -150,82 +244,6 @@ class Select2v4
         $driver       = $this->session->getDriver();
         $active_input = $driver->evaluateScript('return document.activeElement.attributes["aria-controls"].value');
         $this->session->getDriver()->setValue('//input[@aria-controls="'.$active_input.'"]', $term);
-    }
-
-    protected function openSelect2()
-    {
-        $this->session->executeScript(
-            \sprintf(
-                "\$(%s).select2('open');",
-                \json_encode('#'.$this->select->getAttribute('id'))
-            )
-        );
-
-        // Wait for select2 to be open?
-    }
-
-    /**
-     * Wait for suggestions, then select the value with the given result caption
-     *
-     * @param string $result_caption
-     */
-    public function chooseResult($result_caption)
-    {
-        Spin::fn(
-            function () use ($result_caption) {
-                $choices = $this->listSearchSuggestions();
-                if ( ! isset($choices[$result_caption])) {
-                    throw new ExpectationException(
-                        'Could not find a select 2 choice `'.$result_caption.'` in '.\json_encode(\array_keys($choices)),
-                        $this->session->getDriver()
-                    );
-                }
-                $choices[$result_caption]->click();
-            }
-        )
-            ->setDelayMs(500)
-            ->forAttempts(10);
-    }
-
-    /**
-     * @return NodeElement[]
-     */
-    protected function listSearchSuggestions()
-    {
-        $select_id  = $this->select->getAttribute('id');
-        $results_id = 'select2-'.$select_id.'-results';
-        $results    = $this->assert->elementExists('css', '#'.$results_id);
-        $items      = [];
-        foreach ($results->findAll('xpath', '//li[@aria-selected]') as $result) {
-            /** @var NodeElement $result */
-            $items[$result->getText()] = $result;
-        }
-
-        return $items;
-    }
-
-    /**
-     * @param NodeElement $combo
-     *
-     * @return NodeElement[]
-     */
-    protected function listRenderedSelections(NodeElement $combo)
-    {
-        if ($combo->hasClass('select2-selection--single')) {
-            $choices = [$this->assert->elementExists('css', '.select2-selection__rendered', $combo)];
-        } else {
-            $choices = $combo->findAll('css', '.select2-selection__choice');
-        }
-
-        $selections = [];
-        foreach ($choices as $choice) {
-            /** @var NodeElement $choice */
-            // Can't use getText as there's no guarantee these elements will be visible e.g. if control is hidden
-            $text              = \trim(\strip_tags($choice->getHtml()), "× \t\n\r");
-            $selections[$text] = $choice;
-        }
-
-        return $selections;
     }
 
     /**
@@ -258,6 +276,59 @@ class Select2v4
         $selection = $this->assert->elementExists('css', '.select2-selection', $parent);
 
         return $selection;
+    }
+
+    /**
+     * @param NodeElement $combo
+     *
+     * @return NodeElement[]
+     */
+    protected function listRenderedSelections(NodeElement $combo)
+    {
+        if ($combo->hasClass('select2-selection--single')) {
+            $choices = [$this->assert->elementExists('css', '.select2-selection__rendered', $combo)];
+        } else {
+            $choices = $combo->findAll('css', '.select2-selection__choice');
+        }
+
+        $selections = [];
+        foreach ($choices as $choice) {
+            /** @var NodeElement $choice */
+            // Can't use getText as there's no guarantee these elements will be visible e.g. if control is hidden
+            $text              = \trim(\strip_tags($choice->getHtml()), "× \t\n\r");
+            $selections[$text] = $choice;
+        }
+
+        return $selections;
+    }
+
+    /**
+     * @return NodeElement[]
+     */
+    protected function listSearchSuggestions()
+    {
+        $select_id  = $this->select->getAttribute('id');
+        $results_id = 'select2-'.$select_id.'-results';
+        $results    = $this->assert->elementExists('css', '#'.$results_id);
+        $items      = [];
+        foreach ($results->findAll('xpath', '//li[@aria-selected]') as $result) {
+            /** @var NodeElement $result */
+            $items[$result->getText()] = $result;
+        }
+
+        return $items;
+    }
+
+    protected function openSelect2()
+    {
+        $this->session->executeScript(
+            \sprintf(
+                "\$(%s).select2('open');",
+                \json_encode('#'.$this->select->getAttribute('id'))
+            )
+        );
+
+        // Wait for select2 to be open?
     }
 
 }
