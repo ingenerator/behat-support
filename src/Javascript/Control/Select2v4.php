@@ -9,7 +9,6 @@ namespace Ingenerator\BehatSupport\Javascript\Control;
 use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\ExpectationException;
-use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Behat\Mink\Session;
 use Behat\Mink\WebAssert;
 use Ingenerator\BehatSupport\Assertion\Spin;
@@ -39,12 +38,10 @@ class Select2v4
 
     protected function __construct(Session $session, NodeElement $base_select)
     {
-        if ( ! $session->getDriver() instanceof Selenium2Driver) {
-            throw new UnsupportedDriverActionException(
-                __CLASS__.' needs a selenium driver, got %s',
-                $session->getDriver()
-            );
-        }
+        //guard against drivers which don't support JS
+        $driver = $session->getDriver();
+        $driver->evaluateScript('return true');
+
         if ( ! $base_select->hasClass('select2-hidden-accessible')) {
             throw new \UnexpectedValueException(
                 'Control '.$base_select->getOuterHtml().' has not been initialised as select2'
