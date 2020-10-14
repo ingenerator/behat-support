@@ -6,7 +6,6 @@
 namespace Ingenerator\BehatSupport\Javascript\Control;
 
 
-use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Session;
@@ -163,14 +162,6 @@ class Select2v4
         );
 
         // Wait for select2 to be open?
-    }
-
-    protected function getWebdriver()
-    {
-        $driver = $this->session->getDriver();
-
-        /** @var Selenium2Driver $driver */
-        return $driver->getWebDriverSession();
     }
 
     /**
