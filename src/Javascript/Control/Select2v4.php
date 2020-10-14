@@ -151,8 +151,9 @@ class Select2v4
     public function typeSearchTerm($term)
     {
         $this->openSelect2();
-        $search_input = $this->getWebdriver()->activeElement();
-        $search_input->postValue(['value' => [$term]]);
+        $driver       = $this->session->getDriver();
+        $active_input = $driver->evaluateScript('return document.activeElement.attributes["aria-controls"].value');
+        $this->session->getDriver()->setValue('//input[@aria-controls="'.$active_input.'"]', $term);
     }
 
     protected function openSelect2()
