@@ -11,6 +11,7 @@ use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Session;
 use Behat\Mink\WebAssert;
 use Ingenerator\BehatSupport\Assertion\Spin;
+use Ingenerator\BehatSupport\Mink\MinkBrowserChecker;
 use const JSON_PRETTY_PRINT;
 
 /**
@@ -38,9 +39,7 @@ class Select2v4
 
     protected function __construct(Session $session, NodeElement $base_select)
     {
-        //guard against drivers which don't support JS
-        $driver = $session->getDriver();
-        $driver->evaluateScript('return true');
+        MinkBrowserChecker::requireJavascript($session);
 
         if ( ! $base_select->hasClass('select2-hidden-accessible')) {
             throw new \UnexpectedValueException(
