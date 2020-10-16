@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 1.0.4 (2020-10-16)
+
+* Improve Select2v4 compatibility with other webdrivers. Primarily to allow it to be used with chrome.
+
 ## 1.0.3 (2020-09-29)
 
 * Remove incorrect license from docblocks
