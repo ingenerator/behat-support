@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 1.0.5 (2020-10-16)
+
+* Add HashNodeTable to build TableNode's from arrays
+
 ## 1.0.4 (2020-10-16)
 
 * Improve Select2v4 compatibility with other webdrivers. Primarily to allow it to be used with chrome.
