@@ -35,6 +35,16 @@ class HashTableNode extends TableNode
     }
 
     /**
+     * @param array $rows
+     *
+     * @return HashTableNode
+     */
+    public static function withRows(array $rows): HashTableNode
+    {
+        return new static($rows);
+    }
+
+    /**
      * @param TableNode $source
      * @param string    $column
      * @param string[]  $want_values
@@ -51,16 +61,6 @@ class HashTableNode extends TableNode
         }
 
         return static::withRows($filtered);
-    }
-
-    /**
-     * @param array $rows
-     *
-     * @return HashTableNode
-     */
-    public static function withRows(array $rows): HashTableNode
-    {
-        return static::withRows($rows);
     }
 
     /**
