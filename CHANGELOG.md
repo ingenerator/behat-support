@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+* Remove unnecessary / incorrect `return` statement from javascript commands
+
 ## 1.0.6 (2020-10-28)
 
 * FIX HashTableNode named constructor ::withRows()
