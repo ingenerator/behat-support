@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 1.0.7 (2020-10-29)
+
 * Add `MinkBrowserChecker::requireChromeDriver` and `::requireGoutteDriver` to enforce explicit driver types.
 * Remove unnecessary / incorrect `return` statement from javascript commands
 
