@@ -90,7 +90,7 @@ JS;
             throw new \RuntimeException('Timed out waiting for '.$url.' to download');
         }
 
-        $result = $this->mink->evaluateScript("return window.$handle.getResult();");
+        $result = $this->mink->evaluateScript("window.$handle.getResult();");
         if ( ! $result['success']) {
             throw new \RuntimeException('Error downloading '.$url.' : '.$result['error']);
         }

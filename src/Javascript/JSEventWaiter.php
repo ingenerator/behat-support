@@ -152,7 +152,7 @@ JS;
             );
         }
 
-        return $this->mink->evaluateScript("return $handler.getResult();");
+        return $this->mink->evaluateScript("$handler.getResult();");
     }
 
 }

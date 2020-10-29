@@ -4,6 +4,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 1.0.7 (2020-10-29)
+
+* Switch to github actions instead of travis for testing
+* Add `MinkBrowserChecker::requireChromeDriver` and `::requireGoutteDriver` to enforce explicit driver types.
+* Remove unnecessary / incorrect `return` statement from javascript commands
+
 ## 1.0.6 (2020-10-28)
 
 * FIX HashTableNode named constructor ::withRows()
