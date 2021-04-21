@@ -4,6 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 1.1.0 (2021-04-21)
+
+* Support PHP8
+* Drop support for PHP7.2
+
 ## 1.0.7 (2020-10-29)
 
 * Switch to github actions instead of travis for testing
