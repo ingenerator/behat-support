@@ -24,11 +24,10 @@ class DateParamTest extends \PHPUnit\Framework\TestCase
      *           ["Y+1-m-d"]
      *           ["Y-(m+1-d"]
      *           ["Y-(m*1)-d"]
-     *
-     * @expectedException \InvalidArgumentException
      */
     public function test_it_throws_on_invalid_specification($string)
     {
+        $this->expectException(\InvalidArgumentException::class);
         DateParam::parse($string);
     }
 

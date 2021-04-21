@@ -55,13 +55,11 @@ class SpinTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Failed attempt 4
-     */
     public function test_it_bubbles_exception_after_final_retry()
     {
         $ran_count = 0;
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Failed attempt 4');
         Spin::fn(
             function () use (& $ran_count) {
                 $ran_count++;
@@ -131,13 +129,11 @@ class SpinTest extends \PHPUnit\Framework\TestCase
         $this->assertGreaterThanOrEqual(4, $ran_count, 'Should fit at least 4 runs in 1 second');
     }
 
-    /**
-     * @expectedException \Behat\Mink\Exception\UnsupportedDriverActionException
-     * @expectedExceptionMessage Attempt 1
-     */
     public function test_it_bubbles_unsupported_driver_action_immediately()
     {
         $ran_count = 0;
+        $this->expectException(UnsupportedDriverActionException::class);
+        $this->expectExceptionMessage('Attempt 1');
         Spin::fn(
             function () use (& $ran_count) {
                 $ran_count++;
