@@ -21,11 +21,9 @@ class HashTableNodeTest extends TestCase
         $this->assertInstanceOf(TableNode::class, $hash_table_node);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function test_it_throws_if_rows_dont_match()
     {
+        $this->expectException(\InvalidArgumentException::class);
         HashTableNode::withRows([[1, 2, 3, 4], ["A", "B"]]);
     }
 

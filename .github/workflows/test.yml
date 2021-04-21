@@ -5,9 +5,6 @@ on:
       # Only mainline branches, features etc are covered on the pull_request trigger
       - '*.x'
   pull_request:
-  schedule:
-      # Build every Monday morning in case of external issues
-    - cron: '0 8 * * 1'
 
 jobs:
   run-tests:
@@ -17,12 +14,14 @@ jobs:
       fail-fast: false
       matrix:
         php_version:
-          - '7.2'
           - '7.4'
+          - '8.0'
         dependencies:
           - 'default'
         include:
-          - php_version: '7.2'
+          - php_version: '7.4'
+            dependencies: 'lowest'
+          - php_version: '8.0'
             dependencies: 'lowest'
     steps:
       - name: Setup PHP
@@ -52,9 +51,9 @@ jobs:
         run: |
           if [ $DEPENDENCIES == 'lowest' ]
           then
-            composer update --prefer-lowest --no-interaction --no-suggest --no-progress
+            composer update --prefer-lowest --no-interaction --no-progress
           else
-            composer install --no-interaction --no-suggest --no-progress
+            composer install --no-interaction --no-progress
           fi
 
       - name: Run unit tests
