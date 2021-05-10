@@ -241,7 +241,13 @@ class Select2v4
     {
         $this->openSelect2();
         $driver       = $this->session->getDriver();
-        $active_input = $driver->evaluateScript('return document.activeElement.attributes["aria-controls"].value');
+        $active_input = Spin::fn(
+            function () use ($driver) {
+                return $driver->evaluateScript('return document.activeElement.attributes["aria-controls"].value');
+            }
+        )
+            ->setDelayMs(5)
+            ->forAttempts(10);
         $this->session->getDriver()->setValue('//input[@aria-controls="'.$active_input.'"]', $term);
     }
 
