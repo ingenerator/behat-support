@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 1.1.1 (2021-05-10)
+
+* Improve reliability of select2 filling wrapping it in a retry loop at 5ms intervals up to 10 times.
+
 ## 1.1.0 (2021-04-21)
 
 * Support PHP8
