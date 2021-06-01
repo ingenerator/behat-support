@@ -4,6 +4,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 1.1.2 (2021-01-06)
+
+* Catch driver-level errors when attempting to capture failing page HTML / screenshots.
+  If the listener throws an exception, it terminates the whole behat process. This can happen if
+  the browser has crashed / lost connection, and prevents e.g. the progress formatter from rendering
+  the list of failed steps. Instead, print the exception details to output and move on.
+
 ## 1.1.1 (2021-05-10)
 
 * Improve reliability of select2 filling wrapping it in a retry loop at 5ms intervals up to 10 times.

@@ -64,23 +64,32 @@ class SaveFailingPagesListener implements EventSubscriberInterface
         }
 
         // NB: if a previous scenario loaded a page it will still be in the browser
-
         $file     = $this->getOutputFilename($event);
-        $session  = $this->mink->getSession();
-        $messages = [
-            '',
-            '<comment>Step failed on URL: '.$session->getCurrentUrl().'</comment>',
-        ];
+        try {
+            // Sometimes the failure is a browser-level issue, and so trying to get the current URL / HTML will also
+            // fail. This has to be caught : uncaught exceptions from a behat listener will terminate the entire build
+            // without even allowing the `progress` formatter to print the list of failed scenarios/steps making it very
+            // hard to debug where & why this went wrong.
+            $session  = $this->mink->getSession();
+            $messages = [
+                '',
+                '<comment>Step failed on URL: '.$session->getCurrentUrl().'</comment>',
+            ];
 
-        $this->writeFile($file.'.html', $session->getPage()->getContent());
-        $messages[] = "<comment>    Captured HTML to $file.html</comment>";
+            $this->writeFile($file.'.html', $session->getPage()->getContent());
+            $messages[] = "<comment>    Captured HTML to $file.html</comment>";
 
-        if ($shot = $this->getScreenshotIfPossible($session)) {
-            $this->writeFile($file.'.png', $shot);
-            $messages[] = "<comment>    Captured screenshot to $file.png</comment>";
+            if ($shot = $this->getScreenshotIfPossible($session)) {
+                $this->writeFile($file.'.png', $shot);
+                $messages[] = "<comment>    Captured screenshot to $file.png</comment>";
+            }
+
+            $this->output->writeln($messages);
+        } catch (\Exception $e) {
+            $this->output->writeln('<error>Could not capture failure page for '.\basename($file).'</error>');
+            $this->output->writeln('<error>'.\get_class($e).': '.$e->getMessage().'</error>');
+            $this->output->writeln('<error>'.$e->getTraceAsString().'</error>');
         }
-
-        $this->output->writeln($messages);
     }
 
     /**
