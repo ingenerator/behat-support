@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+* Add a custom exception filter to the `Spin::fn()` to simplify retrying certain types of exceptions but not others.
+
 ## 1.1.2 (2021-01-06)
 
 * Catch driver-level errors when attempting to capture failing page HTML / screenshots.
