@@ -4,6 +4,7 @@ namespace test\Ingenerator\BehatSupport\Assertion;
 
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Ingenerator\BehatSupport\Assertion\Spin;
+use PHPUnit\TextUI\RuntimeException;
 
 /**
  * @author    Andrew Coulton <andrew@ingenerator.com>
@@ -142,6 +143,82 @@ class SpinTest extends \PHPUnit\Framework\TestCase
         )
             ->setDelayMs(0)
             ->forAttempts(3);
+    }
+
+    public function provider_custom_exception_filter()
+    {
+        return [
+            [
+                // Still throws after the allowed number of times regardless of the retry decider
+                [
+                    'callableResults' => [
+                        new RuntimeException('Expected (1)'),
+                        new RuntimeException('Expected (2)'),
+                    ],
+                    'retry'           => ["Expected (1)", "Expected (2)"],
+                    'forAttempts'     => 2,
+                ],
+                "Expected (2)",
+            ],
+            [
+                // Throws if an exception is not retryable
+                [
+                    'callableResults' => [
+                        new RuntimeException('Expected (1)'),
+                        new RuntimeException('Expected (2)'),
+                        new RuntimeException('Unexpected (3)'),
+                        "OK",
+                    ],
+                    'retry'           => ["Expected (1)", "Expected (2)"],
+                    'forAttempts'     => 4,
+                ],
+                "Unexpected (3)",
+            ],
+            [
+                // Succeeds if all exceptions are expected
+                [
+                    'callableResults' => [
+                        new RuntimeException('Expected (1)'),
+                        new RuntimeException('Expected (2)'),
+                        new RuntimeException('Expected (3)'),
+                        "OK",
+                    ],
+                    'retry'           => ["Expected (1)", "Expected (2)", "Expected (3)"],
+                    'forAttempts'     => 4,
+                ],
+                NULL,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provider_custom_exception_filter
+     */
+    public function test_it_supports_custom_exception_filter(array $setup, ?string $expect_throw)
+    {
+        $callableResults = $setup['callableResults'];
+        $spin = Spin::fn(
+            function () use (&$callableResults) {
+                if (empty($callableResults)) {
+                    throw new \UnderflowException("No behaviour defined for this callable execution");
+                }
+                $next = \array_shift($callableResults);
+                if ($next instanceof \Exception) {
+                    throw $next;
+                }
+
+                return $next;
+            }
+        )
+            ->setDelayMs(0)
+            ->setExceptionFilter(fn(\Throwable $e) => \in_array($e->getMessage(), $setup['retry']));
+
+        try {
+            $result = $spin->forAttempts($setup['forAttempts']);
+            $this->assertSame("OK", $result);
+        } catch (\Exception$e) {
+            $this->assertSame($expect_throw, $e->getMessage(), "Expect correct exception");
+        }
     }
 
     /**

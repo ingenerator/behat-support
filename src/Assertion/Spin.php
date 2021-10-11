@@ -20,6 +20,13 @@ namespace Ingenerator\BehatSupport\Assertion;
  *      ->setDelayMs(150)   // or defaults to Spin::$default_delay_ms
  *      ->forSeconds(1.5)   // retry for up to 1.5 seconds
  *
+ * Optionally, pass a custom function to allow you to retry some exceptions but not others. In this example the
+ * exception will be rethrown immediately without retrying unless the message is "Please wait".
+ *
+ *    Spin::fn(fn() => callMyApi())
+ *      ->setExceptionFilter(fn(Exception $e) => $e->getMessage() === "Please wait")
+ *      ->forSeconds(10);
+ *
  * @package Ingenerator\BehatSupport\Assertion
  */
 class Spin
@@ -38,6 +45,11 @@ class Spin
      * @var int
      */
     protected $delay_ms;
+
+    /**
+     * @var callable
+     */
+    protected $exception_filter;
 
     /**
      *
@@ -94,15 +106,30 @@ class Spin
         do {
             try {
                 return \call_user_func($this->assertion);
-            } catch (\Behat\Mink\Exception\UnsupportedDriverActionException $e) {
-                throw $e;
             } catch (\Exception $e) {
-                $last_exception = $e;
+                if ($this->shouldRetryException($e)) {
+                    $last_exception = $e;
+                } else {
+                    throw $e;
+                }
             }
             \usleep($this->delay_ms * 1000);
         } while ($should_retry());
 
         throw $last_exception;
+    }
+
+    protected function shouldRetryException(\Exception $e): bool
+    {
+        if ($e instanceof \Behat\Mink\Exception\UnsupportedDriverActionException) {
+            return FALSE;
+        }
+
+        if ($this->exception_filter) {
+            return ($this->exception_filter)($e);
+        }
+
+        return TRUE;
     }
 
     /**
@@ -133,6 +160,18 @@ class Spin
     public function setDelayMs($delay)
     {
         $this->delay_ms = $delay;
+
+        return $this;
+    }
+
+    /**
+     * @param callable $filter
+     *
+     * @return $this
+     */
+    public function setExceptionFilter(callable $filter)
+    {
+        $this->exception_filter = $filter;
 
         return $this;
     }
