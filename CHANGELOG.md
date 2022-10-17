@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 1.2.0 (2022-10-17)
+
+* Support PHP 8.1 and PHP 8.2
+
 ## 1.1.3 (2021-10-11)
 
 * Add a custom exception filter to the `Spin::fn()` to simplify retrying certain types of exceptions but not others.
