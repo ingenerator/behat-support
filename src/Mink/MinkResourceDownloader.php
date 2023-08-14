@@ -65,12 +65,8 @@ JS;
         return new static($session);
     }
 
-    /**
-     * @param \Behat\Mink\Session $session
-     */
-    protected function __construct(Session $session)
+    protected function __construct(private Session $mink)
     {
-        $this->mink = $session;
     }
 
     /**
