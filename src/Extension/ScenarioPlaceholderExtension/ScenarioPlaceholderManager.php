@@ -23,7 +23,7 @@ class ScenarioPlaceholderManager implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            ScenarioTested::BEFORE => ['reset', 10],
+            ScenarioTested::AFTER => ['reset', 10],
         ];
     }
 

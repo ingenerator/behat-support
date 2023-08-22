@@ -64,10 +64,10 @@ class ScenarioPlaceholderManagerTest extends TestCase
      * @testWith  ["customer_id", "Bill K", "024"]
      *              ["reverse", "James", "semaJ"]
      */
-    public function test_registered_transforms_are_reset_before_each_scenario($type, $arg, $expect_first_time)
+    public function test_registered_transforms_are_reset_after_each_scenario($type, $arg, $expect_first_time)
     {
         $events  = ScenarioPlaceholderManager::getSubscribedEvents();
-        $method  = $events[ScenarioTested::BEFORE][0];
+        $method  = $events[ScenarioTested::AFTER][0];
         $subject = $this->newSubject();
         $subject->registerLookup('customer_id', 'Bill K', '024');
         $subject->registerCallback('reverse', strrev(...));
