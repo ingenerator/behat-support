@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+*  Drop support for PHP8.0
+
 ## 1.2.1 (2023-08-14)
 
 * Fix dynamic property creation warning
