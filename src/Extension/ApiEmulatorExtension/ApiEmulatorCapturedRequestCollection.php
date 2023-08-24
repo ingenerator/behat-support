@@ -15,7 +15,6 @@ class ApiEmulatorCapturedRequestCollection
     public function __construct(ApiEmulatorCapturedRequest ...$requests)
     {
         $this->requests = $requests;
-
     }
 
     /**
@@ -52,7 +51,7 @@ class ApiEmulatorCapturedRequestCollection
             );
         }
 
-        $filtered = $this->filter(fn (ApiEmulatorCapturedRequest $r) => ($r->method === $method) && ($r->uri === $uri));
+        $filtered = $this->filterByUriAndMethod($uri, $method);
         if (count($filtered->requests) !== 1) {
             throw new ApiEmulatorAssertionFailedException(
                 sprintf(
@@ -67,7 +66,30 @@ class ApiEmulatorCapturedRequestCollection
         return $filtered->requests[0];
     }
 
-    private function filter(callable $matcher): ApiEmulatorCapturedRequestCollection
+    /**
+     * Return a new collection containing only requests to the specified URI
+     */
+    public function filterByUri(string $uri): ApiEmulatorCapturedRequestCollection
+    {
+        return $this->filter(fn (ApiEmulatorCapturedRequest $rq) => $rq->uri === $uri);
+    }
+
+    /**
+     * Return a new collection containing only requests to the specified URI with the specified method
+     */
+    public function filterByUriAndMethod(string $uri, string $method): ApiEmulatorCapturedRequestCollection
+    {
+        return $this->filter(
+            fn (ApiEmulatorCapturedRequest $rq) => ($rq->uri === $uri) && ($rq->method === $method)
+        );
+    }
+
+    /**
+     * Return a new collection containing only requests that match the provided filter
+     *
+     * @param callable(ApiEmulatorCapturedRequest):bool $matcher
+     */
+    public function filter(callable $matcher): ApiEmulatorCapturedRequestCollection
     {
         $requests = array_filter($this->requests, $matcher);
 
