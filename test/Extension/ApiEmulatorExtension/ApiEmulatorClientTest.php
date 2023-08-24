@@ -142,6 +142,24 @@ class ApiEmulatorClientTest extends TestCase
         $this->assertEquals($expect, $requests);
     }
 
+    /**
+     * @testWith ["any/old/path"]
+     *           ["/any/old/path"]
+     */
+    public function test_it_can_populate_handler_data_repository($path)
+    {
+        $this->http_client = new SpyingMockHttpClient(new MockResponse('Stored handler data', ['http_code' => 200]));
+        $this->newSubject()->populateRepository($path, ['some' => ['json' => true]]);
+
+        $this->http_client->assertExactlyOneRequest(
+            'POST',
+            'http://my-emulator:8000/_emulator-meta/handler-data/any/old/path',
+            [
+                'json' => ['some' => ['json' => true]],
+            ]
+        );
+    }
+
     protected function setUp(): void
     {
         parent::setUp();

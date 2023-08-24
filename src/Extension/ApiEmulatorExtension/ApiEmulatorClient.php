@@ -6,6 +6,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use function array_map;
 use function json_decode;
+use function ltrim;
 use const JSON_THROW_ON_ERROR;
 
 class ApiEmulatorClient
@@ -39,10 +40,27 @@ class ApiEmulatorClient
         );
     }
 
-    private function doRequestExpectingCode(string $method, string $path, int $expect_code): ResponseInterface
+    /**
+     * Populate arbitrary data on the emulator that handlers can read. Note this will be reset for each scenario.
+     */
+    public function populateRepository(string $path, array $data): void
     {
+        $this->doRequestExpectingCode(
+            'POST',
+            '/_emulator-meta/handler-data/'.ltrim($path, '/'),
+            200,
+            ['json' => $data]
+        );
+    }
+
+    private function doRequestExpectingCode(
+        string $method,
+        string $path,
+        int $expect_code,
+        array $options = []
+    ): ResponseInterface {
         $url = $this->base_url.$path;
-        $response = $this->http_client->request($method, $url);
+        $response = $this->http_client->request($method, $url, $options);
 
         if ($response->getStatusCode() !== $expect_code) {
             // Be explicit because otherwise we hit symfony's bonkers idea of randomly throwing HTTP exceptions from
