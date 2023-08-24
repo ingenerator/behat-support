@@ -2,6 +2,7 @@
 
 namespace test\Ingenerator\BehatSupport\Extension\ApiEmulatorExtension;
 
+use Error;
 use Ingenerator\BehatSupport\Extension\ApiEmulatorExtension\ApiEmulatorAssertionFailedException;
 use Ingenerator\BehatSupport\Extension\ApiEmulatorExtension\ApiEmulatorCapturedRequest;
 use Ingenerator\BehatSupport\Extension\ApiEmulatorExtension\ApiEmulatorCapturedRequestCollection;
@@ -252,6 +253,91 @@ class ApiEmulatorCapturedRequestCollectionTest extends TestCase
             'Filtered collection matches expectation'
         );
         $this->assertEquals($original, $subject, 'Filtering does not modify source collection');
+    }
+
+    public function provider_count()
+    {
+        return [
+            'empty' => [
+                new ApiEmulatorCapturedRequestCollection,
+                0,
+            ],
+            'one' => [
+                new ApiEmulatorCapturedRequestCollection(ApiEmulatorCapturedRequest::stubWith()),
+                1,
+            ],
+            'more' => [
+                new ApiEmulatorCapturedRequestCollection(
+                    ApiEmulatorCapturedRequest::stubWith(),
+                    ApiEmulatorCapturedRequest::stubWith(),
+                    ApiEmulatorCapturedRequest::stubWith(),
+                ),
+                3,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provider_count
+     */
+    public function test_it_provides_count_of_requests(ApiEmulatorCapturedRequestCollection $subject, int $expect)
+    {
+        $this->assertSame($expect, count($subject), 'Countable natively');
+    }
+
+    public function test_its_request_list_cannot_be_modified()
+    {
+        $subject = new ApiEmulatorCapturedRequestCollection();
+        $this->expectException(Error::class);
+        $this->expectExceptionMessage('readonly');
+        $subject->requests[] = ApiEmulatorCapturedRequest::stubWith();
+    }
+
+    public function provider_nth_request()
+    {
+        $rq1 = ApiEmulatorCapturedRequest::stubWith();
+        $rq2 = ApiEmulatorCapturedRequest::stubWith();
+        $rq3 = ApiEmulatorCapturedRequest::stubWith();
+
+        return [
+            'first' => [
+                new ApiEmulatorCapturedRequestCollection($rq1, $rq2, $rq3),
+                1,
+                $rq1,
+            ],
+            'third' => [
+                new ApiEmulatorCapturedRequestCollection($rq1, $rq2, $rq3),
+                3,
+                $rq3,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provider_nth_request
+     */
+    public function test_it_can_provide_nth_request(ApiEmulatorCapturedRequestCollection $subject, int $n, $expect)
+    {
+        $this->assertSame($expect, $subject->nthRequest($n));
+    }
+
+    public function test_it_throws_for_nth_request_that_does_not_exist()
+    {
+        $subject = new ApiEmulatorCapturedRequestCollection(
+            ApiEmulatorCapturedRequest::stubWith(method: 'GET', uri: 'http://emulator:90/a-get'),
+            ApiEmulatorCapturedRequest::stubWith(method: 'POST', uri: 'http://emulator:90/b-get'),
+            ApiEmulatorCapturedRequest::stubWith(method: 'GET', uri: 'http://emulator:90/c-get'),
+        );
+        $this->expectException(ApiEmulatorAssertionFailedException::class);
+        $this->expectExceptionMessage(
+            <<<TEXT
+            There was no matching emulator request at position 4 - got:
+             - GET http://emulator:90/a-get
+             - POST http://emulator:90/b-get
+             - GET http://emulator:90/c-get
+            TEXT
+        );
+        $subject->nthRequest(4);
     }
 
     private function testAssertionMethod(\Closure $callable, bool|string $expect_exception): void

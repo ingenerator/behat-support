@@ -2,10 +2,12 @@
 
 namespace Ingenerator\BehatSupport\Extension\ApiEmulatorExtension;
 
+use Countable;
 use function array_filter;
 use function array_map;
+use function sprintf;
 
-class ApiEmulatorCapturedRequestCollection
+class ApiEmulatorCapturedRequestCollection implements Countable
 {
     /**
      * @var ApiEmulatorCapturedRequest[]
@@ -66,6 +68,11 @@ class ApiEmulatorCapturedRequestCollection
         return $filtered->requests[0];
     }
 
+    public function count(): int
+    {
+        return count($this->requests);
+    }
+
     /**
      * Return a new collection containing only requests to the specified URI
      */
@@ -94,6 +101,26 @@ class ApiEmulatorCapturedRequestCollection
         $requests = array_filter($this->requests, $matcher);
 
         return new ApiEmulatorCapturedRequestCollection(...$requests);
+    }
+
+    /**
+     * Get a request by sequence number (e.g. the first request n=1, second request n=2, etc)
+     *
+     * @throws ApiEmulatorAssertionFailedException if n is higher than the number of requests in the collection
+     */
+    public function nthRequest(int $n): ApiEmulatorCapturedRequest
+    {
+        if (count($this->requests) < $n) {
+            throw new ApiEmulatorAssertionFailedException(
+                sprintf(
+                    "There was no matching emulator request at position %d - got:\n%s",
+                    $n,
+                    $this->stringifyRequestList()
+                )
+            );
+        }
+
+        return $this->requests[$n - 1];
     }
 
     private function stringifyRequestList(): string
