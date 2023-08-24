@@ -13,9 +13,11 @@ use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpClient\HttpClient;
 
 class ApiEmulatorExtension implements Extension
 {
+    const EMULATOR_HTTP_CLIENT_SERVICE_ID = 'api_emulator_client.http_client';
     const EMULATOR_CLIENT_SERVICE_ID = 'api_emulator_client';
 
     public function getConfigKey()
@@ -39,9 +41,17 @@ class ApiEmulatorExtension implements Extension
 
     public function load(ContainerBuilder $container, array $config)
     {
+        $this->loadEmulatorHttpClientService($container);
         $this->loadEmulatorClientService($container, $config);
         $this->loadContextInitializer($container);
         $this->loadEventListener($container);
+    }
+
+    private function loadEmulatorHttpClientService(ContainerBuilder $container_builder): void
+    {
+        $definition = new Definition(HttpClient::class);
+        $definition->setFactory(HttpClient::class.'::create');
+        $container_builder->setDefinition(self::EMULATOR_HTTP_CLIENT_SERVICE_ID, $definition);
     }
 
 
@@ -52,6 +62,7 @@ class ApiEmulatorExtension implements Extension
             new Definition(
                 ApiEmulatorClient::class,
                 [
+                    new Reference(self::EMULATOR_HTTP_CLIENT_SERVICE_ID),
                     $config['base_url'],
                 ]
             )

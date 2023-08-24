@@ -50,7 +50,9 @@ class ApiEmulatorEventSubscriberTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->emulator_client = new ApiEmulatorClient;
+        $this->emulator_client = new class extends ApiEmulatorClient {
+            public function __construct() {}
+        };
     }
 
 
