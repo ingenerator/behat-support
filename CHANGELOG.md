@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+* Configure .gitattributes to remove docs and development files from exported archives, to reduce production
+  package size.
 * Add ScenarioPlaceholderExtension to support placeholder values in feature files that are replaced at runtime.
 * Drop support for PHP8.0
 
