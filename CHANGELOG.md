@@ -1,10 +1,14 @@
 # Change Log
+
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
-*  Drop support for PHP8.0
+* Configure .gitattributes to remove docs and development files from exported archives, to reduce production
+  package size.
+* Add ScenarioPlaceholderExtension to support placeholder values in feature files that are replaced at runtime.
+* Drop support for PHP8.0
 
 ## 1.2.1 (2023-08-14)
 
