@@ -2,6 +2,7 @@
 
 namespace Ingenerator\BehatSupport\Extension\ApiEmulatorExtension;
 
+use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use function array_map;
@@ -25,6 +26,23 @@ class ApiEmulatorClient
     public function deleteState(): void
     {
         $this->doRequestExpectingCode('DELETE', '/_emulator-meta/global-state', 204);
+    }
+
+    /**
+     * Ensure that the emulator healthcheck is returning a 200, or fail
+     *
+     * @throws ApiEmulatorException if the emulator is not healthy
+     */
+    public function ensureHealthy(): void
+    {
+        try {
+            $this->doRequestExpectingCode('GET', '/_emulator-meta/health', 200);
+        } catch (TransportException $e) {
+            throw new ApiEmulatorException(
+                'Emulator request failed: [TransportException] '.$e->getMessage(),
+                previous: $e
+            );
+        }
     }
 
     /**

@@ -31,6 +31,12 @@ class ApiEmulatorExtension implements Extension
             ->children()
             ->scalarNode('base_url')
             ->defaultValue('http://api-emulator-http:9000')
+            ->end()
+            ->integerNode('healthcheck_wait_timeout_seconds')
+            ->defaultValue(30)
+            ->end()
+            ->integerNode('healthcheck_retry_interval_ms')
+            ->defaultValue(250)
             ->end();
     }
 
@@ -44,7 +50,7 @@ class ApiEmulatorExtension implements Extension
         $this->loadEmulatorHttpClientService($container);
         $this->loadEmulatorClientService($container, $config);
         $this->loadContextInitializer($container);
-        $this->loadEventListener($container);
+        $this->loadEventListener($container, $config);
     }
 
     private function loadEmulatorHttpClientService(ContainerBuilder $container_builder): void
@@ -79,11 +85,15 @@ class ApiEmulatorExtension implements Extension
         $container->setDefinition('api_emulator.initializer', $definition);
     }
 
-    private function loadEventListener(ContainerBuilder $container)
+    private function loadEventListener(ContainerBuilder $container, array $config)
     {
         $definition = new Definition(
             ApiEmulatorEventSubscriber::class,
-            [new Reference(self::EMULATOR_CLIENT_SERVICE_ID)]
+            [
+                new Reference(self::EMULATOR_CLIENT_SERVICE_ID),
+                $config['healthcheck_wait_timeout_seconds'],
+                $config['healthcheck_retry_interval_ms']
+            ]
         );
         $definition->addTag(EventDispatcherExtension::SUBSCRIBER_TAG, ['priority' => 0]);
         $container->setDefinition('api_emulator.listener', $definition);

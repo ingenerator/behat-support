@@ -16,7 +16,8 @@
     "behat/behat": "^3.11",
     "ext-json": "*",
     "symfony/http-client": "^5.4 || ^6.3",
-    "phpunit/phpunit": "^9.6"
+    "phpunit/phpunit": "^9.6",
+    "ingenerator/php-utils": "^1.19"
   },
   "support": {
     "source": "https://github.com/ingenerator/behat-support/",

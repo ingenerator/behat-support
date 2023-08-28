@@ -10,11 +10,20 @@ Register the extension in your behat.yml:
 ```gherkin
 # behat.yml
 default:
-extensions:
-Ingenerator\BehatSupport\Extension\ApiEmulatorExtension:
+  extensions:
+    Ingenerator\BehatSupport\Extension\ApiEmulatorExtension:
       # Optionally, specify the base URL for the emulator service. 
       # This defaults to http://api-emulator-http:9000
       # base_url: http://url-of-my-emulator:8080
+      
+      # Optionally, specify how long to wait at the start of a suite for the emulator to respond to healthchecks
+      # This defaults to 30 seconds
+      # healthcheck_wait_timeout_seconds: 15
+  
+      # Optionally, specify delay between between retries if the emulator is not responding to healthchecks at the start
+      # of the suite.
+      # This defaults to 250ms
+      # healthcheck_retry_interval_ms: 500
 ```
 
 This will make the client available, and automatically sends a call to reset the emulator's global state before each 

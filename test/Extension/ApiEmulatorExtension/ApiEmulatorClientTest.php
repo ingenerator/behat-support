@@ -8,6 +8,7 @@ use Ingenerator\BehatSupport\Extension\ApiEmulatorExtension\ApiEmulatorClient;
 use Ingenerator\BehatSupport\Extension\ApiEmulatorExtension\ApiEmulatorException;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -48,6 +49,49 @@ class ApiEmulatorClientTest extends TestCase
         $this->expectException(ApiEmulatorException::class);
         $this->expectExceptionMessage($expect_msg);
         $subject->deleteState();
+    }
+
+    public function provider_ensure_healthy()
+    {
+        return [
+            'ok, 200' => [
+                new MockResponse('OK', ['http_code' => 200]),
+                false,
+            ],
+            'running with problems, 404' => [
+                new MockResponse('OK', ['http_code' => 404]),
+                'Emulator request failed: got HTTP 404 from GET http://my-emulator:8000/_emulator-meta/health (expected 200)',
+            ],
+            'unknown network etc' => [
+                new TransportException('No route to host'),
+                'Emulator request failed: [TransportException] No route to host',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provider_ensure_healthy
+     */
+    public function test_it_can_ensure_healthy($response, $expect_thrown)
+    {
+        $this->http_client = new SpyingMockHttpClient(
+            fn () => $response instanceof \Throwable ? throw $response : $response
+        );
+
+        $subject = $this->newSubject();
+
+        try {
+            $subject->ensureHealthy();
+            $this->assertFalse($expect_thrown, 'Scenario did not throw an exception');
+        } catch (ApiEmulatorException $e) {
+            $this->assertSame($expect_thrown, $e->getMessage(), 'Expected exception to match');
+        }
+
+        $this->http_client->assertExactlyOneRequest(
+            'GET',
+            'http://my-emulator:8000/_emulator-meta/health',
+            [],
+        );
     }
 
     public function provider_list_requests()
