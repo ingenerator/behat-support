@@ -5,6 +5,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+* Add ApiEmulatorExtension to provide placeholders, assertions & state management with ingenerator/api_emulator.
+* Require phpunit/phpunit as a core dependency, to simplify making assertions with formatted diffs within
+  code shipped with this package.
 * Configure .gitattributes to remove docs and development files from exported archives, to reduce production
   package size.
 * Add ScenarioPlaceholderExtension to support placeholder values in feature files that are replaced at runtime.

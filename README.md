@@ -12,6 +12,9 @@ Behat-Support provides various helpers and support functions that we commonly us
 
 # Contents
 
+* ApiEmulatorExtension - provides a client, contexts & placeholders to manage state & make assertions
+  when testing projects that use [ingenerator/api_emulator](https://github.com/ingenerator/api_emulator).
+  See [docs/api_emulator_extension.md](docs/api_emulator_extension.md).
 * ScenarioPlaceholderExtension - a mechanism for using placeholder values in feature files that will
   be resolved at runtime. See [docs/scenario_placeholder_extension.md](docs/scenario_placeholder_extension.md).
 
