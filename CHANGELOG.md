@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 1.3.0 (2023-08-28)
+
 * Add ApiEmulatorExtension to provide placeholders, assertions & state management with ingenerator/api_emulator.
 * Require phpunit/phpunit as a core dependency, to simplify making assertions with formatted diffs within
   code shipped with this package.
