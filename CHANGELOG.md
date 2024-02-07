@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+* Advertise existing support for ingenerator/php-utils v2
+
 ## 1.3.0 (2023-08-28)
 
 * Add ApiEmulatorExtension to provide placeholders, assertions & state management with ingenerator/api_emulator.
