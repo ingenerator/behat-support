@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 1.3.1 (2024-02-07)
+
 * Advertise existing support for ingenerator/php-utils v2
 
 ## 1.3.0 (2023-08-28)
