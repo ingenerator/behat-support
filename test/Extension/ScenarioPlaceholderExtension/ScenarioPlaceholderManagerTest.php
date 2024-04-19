@@ -23,6 +23,7 @@ class ScenarioPlaceholderManagerTest extends TestCase
         return [
             'tomorrow'  => ['Y-m-(d+1)', (new \DateTimeImmutable('tomorrow'))->format('Y-m-d')],
             'next year' => ['(Y+1)-03-02', (date('Y') + 1).'-03-02'],
+            'custom format' => ['(Y+1)-03-02 as j M y', '2 Mar '.(date('y') + 1)],
         ];
     }
 
