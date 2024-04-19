@@ -92,6 +92,13 @@ class ScenarioPlaceholderManager implements EventSubscriberInterface
 
     private function transformDate(string $arg): string
     {
-        return DateParam::parse($arg)->format('Y-m-d');
+        // Parse a string like either:
+        // - `2024-m-d` (or any value parseable as a DateParam) for the date formatted as Y-m-d
+        // - `Y-m-d as d M Y` to have the parsed value with a custom date format
+        $arg_parts = explode(' as ', $arg);
+        // If no format specified, use Y-m-d by default
+        $arg_parts[1] ??= 'Y-m-d';
+
+        return DateParam::parse($arg_parts[0])->format($arg_parts[1]);
     }
 }

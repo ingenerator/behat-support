@@ -42,9 +42,9 @@ hardcoded values.
 
 Out of the box, we support:
 
-| type | description                                                                                                           |
-|------|-----------------------------------------------------------------------------------------------------------------------|
-| date | Passes the argument through `Ingenerator\BehatSupport\Param\DateParam::parse()` and returns a date formatted as Y-m-d |
+| type | description                                                                                                                                                                                                              |
+|------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| date | Passes the argument through `Ingenerator\BehatSupport\Param\DateParam::parse()` and returns a date. By default this will be formatted Y-m-d, but you can specify a custom format with e.g. `{{date:Y-m-(d+1) as j M Y}}` |
 
 ### Registering custom placeholders
 

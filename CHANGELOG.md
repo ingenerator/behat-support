@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 1.4.0 (2024-04-19)
+
+* Support custom formats for a date placeholder e.g. `{{date:Y-m-(d+1) as D}}` for tommorrow's short day of the week
+
 ## 1.3.1 (2024-02-07)
 
 * Advertise existing support for ingenerator/php-utils v2
