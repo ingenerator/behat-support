@@ -9,6 +9,7 @@ use Ingenerator\BehatSupport\Extension\ApiEmulatorExtension\ApiEmulatorEventSubs
 use Ingenerator\BehatSupport\Extension\ApiEmulatorExtension\ApiEmulatorException;
 use Ingenerator\PHPUtils\DateTime\Clock\RealtimeClock;
 use Ingenerator\PHPUtils\DateTime\Clock\StoppedMockClock;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use function array_shift;
 
@@ -46,7 +47,7 @@ class ApiEmulatorEventSubscriberTest extends TestCase
         $this->assertSame(1, $this->emulator_client->deleted, 'Should have deleted state');
     }
 
-    public function provider_wait_ready_happy_cases()
+    public static function provider_wait_ready_happy_cases()
     {
         return [
             'already healthy' => [
@@ -72,9 +73,7 @@ class ApiEmulatorEventSubscriberTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provider_wait_ready_happy_cases
-     */
+    #[DataProvider('provider_wait_ready_happy_cases')]
     public function test_it_waits_for_the_emulator_to_be_ready_before_starting_suite(
         array $healtcheck_fails,
         int $expect_checks,
@@ -113,7 +112,7 @@ class ApiEmulatorEventSubscriberTest extends TestCase
         }
     }
 
-    public function provider_healthcheck_timeout()
+    public static function provider_healthcheck_timeout()
     {
         return [
             '3 seconds' => [
@@ -134,9 +133,7 @@ class ApiEmulatorEventSubscriberTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provider_healthcheck_timeout
-     */
+    #[DataProvider('provider_healthcheck_timeout')]
     public function test_it_throws_if_emulator_is_not_healthy_within_timeout_at_the_start_of_the_suite(
         int $timeout_seconds,
         string $expect_message

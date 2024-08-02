@@ -3,10 +3,13 @@
 namespace test\Ingenerator\BehatSupport\Extension\ScenarioPlaceholderExtension;
 
 use Behat\Behat\EventDispatcher\Event\ScenarioTested;
+use DateTimeImmutable;
 use Ingenerator\BehatSupport\Extension\ScenarioPlaceholderExtension\ConflictingPlaceholderDefinitionException;
 use Ingenerator\BehatSupport\Extension\ScenarioPlaceholderExtension\InvalidScenarioPlaceholderException;
 use Ingenerator\BehatSupport\Extension\ScenarioPlaceholderExtension\ScenarioPlaceholderManager;
 use Ingenerator\BehatSupport\Extension\ScenarioPlaceholderExtension\UndefinedScenarioPlaceholderException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use function strrev;
 
@@ -18,19 +21,16 @@ class ScenarioPlaceholderManagerTest extends TestCase
         $this->assertInstanceOf(ScenarioPlaceholderManager::class, $this->newSubject());
     }
 
-    public function provider_dates()
+    public static function provider_dates()
     {
         return [
-            'tomorrow'  => ['Y-m-(d+1)', (new \DateTimeImmutable('tomorrow'))->format('Y-m-d')],
+            'tomorrow'  => ['Y-m-(d+1)', (new DateTimeImmutable('tomorrow'))->format('Y-m-d')],
             'next year' => ['(Y+1)-03-02', (date('Y') + 1).'-03-02'],
             'custom format' => ['(Y+1)-03-02 as j M y', '2 Mar '.(date('y') + 1)],
         ];
     }
 
-    /**
-     * @dataProvider provider_dates
-     */
-
+    #[DataProvider('provider_dates')]
     public function test_it_can_transform_date_params_out_of_the_box(string $arg, string $expect)
     {
         $this->assertSame($expect, $this->newSubject()->transform('date', $arg));
@@ -61,10 +61,8 @@ class ScenarioPlaceholderManagerTest extends TestCase
         $subject->transform('junk', 'whatever');
     }
 
-    /**
-     * @testWith  ["customer_id", "Bill K", "024"]
-     *              ["reverse", "James", "semaJ"]
-     */
+    #[TestWith(['customer_id', 'Bill K', '024'])]
+    #[TestWith(['reverse', 'James', 'semaJ'])]
     public function test_registered_transforms_are_reset_after_each_scenario($type, $arg, $expect_first_time)
     {
         $events  = ScenarioPlaceholderManager::getSubscribedEvents();

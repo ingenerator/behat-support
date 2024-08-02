@@ -5,6 +5,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+* Support PHP 8.3
+* Support PHPUnit^10
+
 ## 1.4.0 (2024-04-19)
 
 * Support custom formats for a date placeholder e.g. `{{date:Y-m-(d+1) as D}}` for tommorrow's short day of the week
