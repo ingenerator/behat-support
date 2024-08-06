@@ -102,12 +102,12 @@ class SimpleApiEmulatorContextTest extends TestCase
                     --- Expected
                     +++ Actual
                     @@ @@
-                     Array &0 [
-                         'some' => Array &1 [
-                    -        'nested' => 'data',
-                    +        'noosted' => 'data',
-                         ],
-                     ]
+                     {
+                         "some": {
+                    -        "nested": "data"
+                    +        "noosted": "data"
+                         }
+                     }
                     TEXT,
             ],
             'passes with correct request and body' => [

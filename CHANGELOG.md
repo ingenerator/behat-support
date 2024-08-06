@@ -6,7 +6,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 * Support PHP 8.3
-* Support PHPUnit^10
+* Remove direct dependency on PHPUnit - instead uses `sebastian/diff` direct to produce pretty assertion failures from 
+  SimpleApiEmulatorContext. This allows the package to be installed alongside a wider range of PHPUnit versions in
+  consuming projects.
 
 ## 1.4.0 (2024-04-19)
 
