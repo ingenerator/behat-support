@@ -7,12 +7,15 @@ use Ingenerator\BehatSupport\Extension\ApiEmulatorExtension\ApiEmulatorCapturedR
 use Ingenerator\BehatSupport\Extension\ApiEmulatorExtension\ApiEmulatorClient;
 use Ingenerator\BehatSupport\Extension\ApiEmulatorExtension\ApiEmulatorException;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
+use Throwable;
 use function get_defined_vars;
 
 class ApiEmulatorClientTest extends TestCase
@@ -38,10 +41,8 @@ class ApiEmulatorClientTest extends TestCase
         );
     }
 
-    /**
-     * @testWith [404, "HTTP 404"]
-     *           [202, "HTTP 202"]
-     */
+    #[TestWith([404, 'HTTP 404'])]
+    #[TestWith([202, 'HTTP 202'])]
     public function test_delete_state_throws_on_unexpected_response($http_code, $expect_msg)
     {
         $this->http_client = new MockHttpClient(new MockResponse('Hmmm', ['http_code' => $http_code]));
@@ -51,7 +52,7 @@ class ApiEmulatorClientTest extends TestCase
         $subject->deleteState();
     }
 
-    public function provider_ensure_healthy()
+    public static function provider_ensure_healthy()
     {
         return [
             'ok, 200' => [
@@ -69,13 +70,11 @@ class ApiEmulatorClientTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provider_ensure_healthy
-     */
+    #[DataProvider('provider_ensure_healthy')]
     public function test_it_can_ensure_healthy($response, $expect_thrown)
     {
         $this->http_client = new SpyingMockHttpClient(
-            fn () => $response instanceof \Throwable ? throw $response : $response
+            fn () => $response instanceof Throwable ? throw $response : $response
         );
 
         $subject = $this->newSubject();
@@ -94,7 +93,7 @@ class ApiEmulatorClientTest extends TestCase
         );
     }
 
-    public function provider_list_requests()
+    public static function provider_list_requests()
     {
         return [
             'no requests' => [
@@ -169,9 +168,7 @@ class ApiEmulatorClientTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider provider_list_requests
-     */
+    #[DataProvider('provider_list_requests')]
     public function test_it_can_fetch_list_of_all_requests(
         string $response_body,
         ApiEmulatorCapturedRequestCollection $expect
@@ -186,10 +183,8 @@ class ApiEmulatorClientTest extends TestCase
         $this->assertEquals($expect, $requests);
     }
 
-    /**
-     * @testWith ["any/old/path"]
-     *           ["/any/old/path"]
-     */
+    #[TestWith(['any/old/path'])]
+    #[TestWith(['/any/old/path'])]
     public function test_it_can_populate_handler_data_repository($path)
     {
         $this->http_client = new SpyingMockHttpClient(new MockResponse('Stored handler data', ['http_code' => 200]));

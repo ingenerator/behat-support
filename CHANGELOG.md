@@ -5,6 +5,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 1.4.1 (2024-08-07)
+
+* Support PHP 8.3
+* Remove direct dependency on PHPUnit - instead uses `sebastian/diff` direct to produce pretty assertion failures from 
+  SimpleApiEmulatorContext. This allows the package to be installed alongside a wider range of PHPUnit versions in
+  consuming projects.
+
 ## 1.4.0 (2024-04-19)
 
 * Support custom formats for a date placeholder e.g. `{{date:Y-m-(d+1) as D}}` for tommorrow's short day of the week

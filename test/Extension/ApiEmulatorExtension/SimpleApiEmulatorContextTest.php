@@ -3,11 +3,13 @@
 namespace test\Ingenerator\BehatSupport\Extension\ApiEmulatorExtension;
 
 use Behat\Gherkin\Node\PyStringNode;
+use Closure;
 use Ingenerator\BehatSupport\Extension\ApiEmulatorExtension\ApiEmulatorAssertionFailedException;
 use Ingenerator\BehatSupport\Extension\ApiEmulatorExtension\ApiEmulatorCapturedRequest;
 use Ingenerator\BehatSupport\Extension\ApiEmulatorExtension\ApiEmulatorCapturedRequestCollection;
 use Ingenerator\BehatSupport\Extension\ApiEmulatorExtension\ApiEmulatorClient;
 use Ingenerator\BehatSupport\Extension\ApiEmulatorExtension\SimpleApiEmulatorContext;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class SimpleApiEmulatorContextTest extends TestCase
@@ -19,7 +21,7 @@ class SimpleApiEmulatorContextTest extends TestCase
         $this->assertInstanceOf(SimpleApiEmulatorContext::class, $this->newSubject());
     }
 
-    public function provider_no_requests()
+    public static function provider_no_requests()
     {
         return [
             'passes with no requests' => [
@@ -34,9 +36,7 @@ class SimpleApiEmulatorContextTest extends TestCase
     }
 
 
-    /**
-     * @dataProvider provider_no_requests
-     */
+    #[DataProvider('provider_no_requests')]
     public function test_it_can_assert_no_requests(array $scenario_requests, false|string $expect_throws)
     {
         $this->client = $this->stubClientWithScenarioRequests($scenario_requests);
@@ -46,7 +46,7 @@ class SimpleApiEmulatorContextTest extends TestCase
     }
 
 
-    public function provider_request_with_body()
+    public static function provider_request_with_body()
     {
         return [
             'fails with no request' => [
@@ -102,12 +102,12 @@ class SimpleApiEmulatorContextTest extends TestCase
                     --- Expected
                     +++ Actual
                     @@ @@
-                     Array &0 (
-                         'some' => Array &1 (
-                    -        'nested' => 'data'
-                    +        'noosted' => 'data'
-                         )
-                     )
+                     {
+                         "some": {
+                    -        "nested": "data"
+                    +        "noosted": "data"
+                         }
+                     }
                     TEXT,
             ],
             'passes with correct request and body' => [
@@ -143,9 +143,7 @@ class SimpleApiEmulatorContextTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provider_request_with_body
-     */
+    #[DataProvider('provider_request_with_body')]
     public function test_it_can_assert_single_exact_request_with_body(
         array $scenario_requests,
         false|string $expect_throws
@@ -191,7 +189,7 @@ class SimpleApiEmulatorContextTest extends TestCase
         };
     }
 
-    private function testAssertionMethod(\Closure $callable, bool|string $expect_throws): void
+    private function testAssertionMethod(Closure $callable, bool|string $expect_throws): void
     {
         try {
             $callable();

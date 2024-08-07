@@ -8,6 +8,7 @@ use Ingenerator\BehatSupport\Extension\ApiEmulatorExtension\ApiEmulatorScenarioP
 use Ingenerator\BehatSupport\Extension\ScenarioPlaceholderExtension\ScenarioPlaceholderAwareContext;
 use Ingenerator\BehatSupport\Extension\ScenarioPlaceholderExtension\ScenarioPlaceholderManager;
 use Ingenerator\BehatSupport\Extension\ScenarioPlaceholderExtension\UndefinedScenarioPlaceholderException;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
 
@@ -22,10 +23,8 @@ class ApiEmulatorScenarioPlaceholderContextTest extends TestCase
     }
 
 
-    /**
-     * @testWith ["api_emulator", "base_url", "http://my-emulator.url.test:9000"]
-     *           ["api_emulator", "base_ping_url", "http://my-emulator.url.test:9000/ping-200"]
-     */
+    #[TestWith(['api_emulator', 'base_url', 'http://my-emulator.url.test:9000'])]
+    #[TestWith(['api_emulator', 'base_ping_url', 'http://my-emulator.url.test:9000/ping-200'])]
     public function test_it_registers_expected_placeholders($type, $arg, $expect)
     {
         $subject = $this->newSubject();

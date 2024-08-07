@@ -3,13 +3,23 @@
 namespace test\Ingenerator\BehatSupport\Assertion;
 
 use Behat\Mink\Exception\UnsupportedDriverActionException;
+use Exception;
 use Ingenerator\BehatSupport\Assertion\Spin;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 use PHPUnit\TextUI\RuntimeException;
+use Throwable;
+use UnderflowException;
+use function array_shift;
+use function class_alias;
+use function class_exists;
+use function in_array;
+use function microtime;
 
 /**
  * @author    Andrew Coulton <andrew@ingenerator.com>
  */
-class SpinTest extends \PHPUnit\Framework\TestCase
+class SpinTest extends TestCase
 {
     public function test_it_returns_instance_from_static_constructor()
     {
@@ -145,7 +155,7 @@ class SpinTest extends \PHPUnit\Framework\TestCase
             ->forAttempts(3);
     }
 
-    public function provider_custom_exception_filter()
+    public static function provider_custom_exception_filter()
     {
         return [
             [
@@ -191,19 +201,17 @@ class SpinTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /**
-     * @dataProvider provider_custom_exception_filter
-     */
+    #[DataProvider('provider_custom_exception_filter')]
     public function test_it_supports_custom_exception_filter(array $setup, ?string $expect_throw)
     {
         $callableResults = $setup['callableResults'];
         $spin = Spin::fn(
             function () use (&$callableResults) {
                 if (empty($callableResults)) {
-                    throw new \UnderflowException("No behaviour defined for this callable execution");
+                    throw new UnderflowException("No behaviour defined for this callable execution");
                 }
-                $next = \array_shift($callableResults);
-                if ($next instanceof \Exception) {
+                $next = array_shift($callableResults);
+                if ($next instanceof Exception) {
                     throw $next;
                 }
 
@@ -211,12 +219,12 @@ class SpinTest extends \PHPUnit\Framework\TestCase
             }
         )
             ->setDelayMs(0)
-            ->setExceptionFilter(fn(\Throwable $e) => \in_array($e->getMessage(), $setup['retry']));
+            ->setExceptionFilter(fn(Throwable $e) => in_array($e->getMessage(), $setup['retry']));
 
         try {
             $result = $spin->forAttempts($setup['forAttempts']);
             $this->assertSame("OK", $result);
-        } catch (\Exception$e) {
+        } catch (Exception$e) {
             $this->assertSame($expect_throw, $e->getMessage(), "Expect correct exception");
         }
     }
@@ -229,9 +237,9 @@ class SpinTest extends \PHPUnit\Framework\TestCase
      */
     protected function assertRetryExecutionTimeBetweenMs($spin, $retry_count, $min, $max)
     {
-        $start = \microtime(TRUE);
+        $start = microtime(TRUE);
         $spin->forAttempts($retry_count);
-        $end    = \microtime(TRUE);
+        $end    = microtime(TRUE);
         $ran_ms = 1000 * ($end - $start);
         $this->assertGreaterThan($min, $ran_ms, 'Should be at least '.$min.'ms to run');
         $this->assertLessThan($max, $ran_ms, 'Should run in less than '.$max.'ms');
@@ -240,15 +248,15 @@ class SpinTest extends \PHPUnit\Framework\TestCase
 }
 
 
-if ( ! \class_exists(\Behat\Mink\Exception\UnsupportedDriverActionException::class)) {
+if ( ! class_exists(UnsupportedDriverActionException::class)) {
     class FakeException extends \RuntimeException
     {
     }
 
-    \class_alias(FakeException::class, \Behat\Mink\Exception\UnsupportedDriverActionException::class);
+    class_alias(FakeException::class, UnsupportedDriverActionException::class);
 }
 
-class StubUnsupportedDriverActionException extends \Behat\Mink\Exception\UnsupportedDriverActionException
+class StubUnsupportedDriverActionException extends UnsupportedDriverActionException
 {
     public function __construct($msg) { $this->message = $msg; }
 }

@@ -4,11 +4,14 @@ namespace Ingenerator\BehatSupport\Extension\ApiEmulatorExtension;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
-use PHPUnit\Framework\Assert;
-use PHPUnit\Framework\ExpectationFailedException;
-use function json_decode;
+use Ingenerator\PHPUtils\StringEncoding\JSON;
+use SebastianBergmann\Diff\Differ;
+use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
+use function json_encode;
 use function sprintf;
 use const JSON_THROW_ON_ERROR;
+use const JSON_UNESCAPED_SLASHES;
+use const JSON_PRETTY_PRINT;
 
 class SimpleApiEmulatorContext implements Context, ApiEmulatorAwareContext
 {
@@ -34,19 +37,25 @@ class SimpleApiEmulatorContext implements Context, ApiEmulatorAwareContext
     {
         $request = $this->client->listRequests()->assertSingleRequestTo($method, $url);
 
-        $expected = json_decode($expected_body->getRaw(), associative: true, flags: JSON_THROW_ON_ERROR);
+        $expected = JSON::decode($expected_body->getRaw());
 
-        try {
-            Assert::assertSame($expected, $request->parsed_body,);
-        } catch (ExpectationFailedException $e) {
-            throw new ApiEmulatorAssertionFailedException(
-                sprintf(
-                    "Payload of %s to %s did not match expectation:\n%s",
-                    $method,
-                    $url,
-                    trim($e->getComparisonFailure()?->getDiff() ?? $e->getMessage())
-                )
-            );
+        if ($request->parsed_body === $expected) {
+            return;
         }
+
+        $diff = (new Differ(new UnifiedDiffOutputBuilder("\n--- Expected\n+++ Actual\n")))
+            ->diff(
+                json_encode($expected, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR),
+                json_encode($request->parsed_body, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)
+            );
+
+        throw new ApiEmulatorAssertionFailedException(
+            sprintf(
+                "Payload of %s to %s did not match expectation:\n%s",
+                $method,
+                $url,
+                trim($diff)
+            )
+        );
     }
 }

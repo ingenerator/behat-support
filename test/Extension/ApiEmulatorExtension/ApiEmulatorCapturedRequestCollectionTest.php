@@ -2,16 +2,18 @@
 
 namespace test\Ingenerator\BehatSupport\Extension\ApiEmulatorExtension;
 
+use Closure;
 use Error;
 use Ingenerator\BehatSupport\Extension\ApiEmulatorExtension\ApiEmulatorAssertionFailedException;
 use Ingenerator\BehatSupport\Extension\ApiEmulatorExtension\ApiEmulatorCapturedRequest;
 use Ingenerator\BehatSupport\Extension\ApiEmulatorExtension\ApiEmulatorCapturedRequestCollection;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class ApiEmulatorCapturedRequestCollectionTest extends TestCase
 {
 
-    public function provider_assert_empty()
+    public static function provider_assert_empty()
     {
         return [
             'is empty' => [
@@ -31,9 +33,7 @@ class ApiEmulatorCapturedRequestCollectionTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provider_assert_empty
-     */
+    #[DataProvider('provider_assert_empty')]
     public function test_it_can_assert_that_it_is_empty(
         ApiEmulatorCapturedRequestCollection $subject,
         false|string $expect_exception
@@ -41,7 +41,7 @@ class ApiEmulatorCapturedRequestCollectionTest extends TestCase
         $this->testAssertionMethod(fn () => $subject->assertEmpty(), $expect_exception);
     }
 
-    public function provider_assert_single_request()
+    public static function provider_assert_single_request()
     {
         return [
             'no requests' => [
@@ -124,9 +124,7 @@ class ApiEmulatorCapturedRequestCollectionTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provider_assert_single_request
-     */
+    #[DataProvider('provider_assert_single_request')]
     public function test_it_can_assert_it_has_a_single_request_to_url(
         ApiEmulatorCapturedRequestCollection $subject,
         string $search_uri,
@@ -153,7 +151,7 @@ class ApiEmulatorCapturedRequestCollectionTest extends TestCase
         );
     }
 
-    public function provider_filter_by_url()
+    public static function provider_filter_by_url()
     {
         $match_rq_1 = ApiEmulatorCapturedRequest::stubWith(method: 'GET', uri: 'http://emulator:90/some?url=here');
         $match_rq_2 = ApiEmulatorCapturedRequest::stubWith(method: 'GET', uri: 'http://emulator:90/some?url=here');
@@ -213,9 +211,7 @@ class ApiEmulatorCapturedRequestCollectionTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provider_filter_by_url
-     */
+    #[DataProvider('provider_filter_by_url')]
     public function test_can_return_collection_filtered_by_url_and_optionally_method(
         ApiEmulatorCapturedRequestCollection $subject,
         string $uri,
@@ -255,7 +251,7 @@ class ApiEmulatorCapturedRequestCollectionTest extends TestCase
         $this->assertEquals($original, $subject, 'Filtering does not modify source collection');
     }
 
-    public function provider_count()
+    public static function provider_count()
     {
         return [
             'empty' => [
@@ -277,9 +273,7 @@ class ApiEmulatorCapturedRequestCollectionTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provider_count
-     */
+    #[DataProvider('provider_count')]
     public function test_it_provides_count_of_requests(ApiEmulatorCapturedRequestCollection $subject, int $expect)
     {
         $this->assertSame($expect, count($subject), 'Countable natively');
@@ -293,7 +287,7 @@ class ApiEmulatorCapturedRequestCollectionTest extends TestCase
         $subject->requests[] = ApiEmulatorCapturedRequest::stubWith();
     }
 
-    public function provider_nth_request()
+    public static function provider_nth_request()
     {
         $rq1 = ApiEmulatorCapturedRequest::stubWith();
         $rq2 = ApiEmulatorCapturedRequest::stubWith();
@@ -313,9 +307,7 @@ class ApiEmulatorCapturedRequestCollectionTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provider_nth_request
-     */
+    #[DataProvider('provider_nth_request')]
     public function test_it_can_provide_nth_request(ApiEmulatorCapturedRequestCollection $subject, int $n, $expect)
     {
         $this->assertSame($expect, $subject->nthRequest($n));
@@ -340,7 +332,7 @@ class ApiEmulatorCapturedRequestCollectionTest extends TestCase
         $subject->nthRequest(4);
     }
 
-    private function testAssertionMethod(\Closure $callable, bool|string $expect_exception): void
+    private function testAssertionMethod(Closure $callable, bool|string $expect_exception): void
     {
         try {
             $callable();
