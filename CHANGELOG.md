@@ -5,6 +5,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## 1.4.2 (2024-08-13)
+* Support `sebastian/diff` 4, 5, and 6 to allow use alongside PHPUnit 9 - 11.
+
 ## 1.4.1 (2024-08-07)
 
 * Support PHP 8.3
