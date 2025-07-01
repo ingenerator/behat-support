@@ -62,7 +62,7 @@ class Select2v4
      *
      * @return static
      */
-    public static function fromLabel(Session $session, $label, NodeElement $container = NULL)
+    public static function fromLabel(Session $session, $label, ?NodeElement $container = NULL)
     {
         $select = (new WebAssert($session))->fieldExists($label, $container);
 
