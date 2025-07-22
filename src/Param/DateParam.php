@@ -27,7 +27,7 @@ class DateParam
      *
      * @return \DateTimeImmutable
      */
-    public static function parse($string, \DateTimeImmutable $relative_to = NULL)
+    public static function parse($string, ?\DateTimeImmutable $relative_to = NULL)
     {
         $relative_to = $relative_to ?: new \DateTimeImmutable('00:00:00');
 
