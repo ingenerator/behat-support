@@ -15,8 +15,8 @@
     "php": "~8.4.0 || ~8.5.0 || ~8.6.0",
     "behat/behat": "^3.15",
     "ext-json": "*",
-    "symfony/http-client": "^6.4.6 || ^7.2",
-    "ingenerator/php-utils": "^1.19 || ^2.0",
+    "symfony/http-client": "^6.4.6 || ^7.2 || ^8.1",
+    "ingenerator/php-utils": "^1.19 || ^2.0 || ^3.0",
     "sebastian/diff": "^4.0||^5.1||^6.0||^9.0"
   },
   "require-dev": {
