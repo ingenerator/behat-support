@@ -6,7 +6,7 @@ use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
 use Ingenerator\PHPUtils\StringEncoding\JSON;
 use SebastianBergmann\Diff\Differ;
-use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
+use SebastianBergmann\Diff\Output\StrictUnifiedDiffOutputBuilder;
 use function json_encode;
 use function sprintf;
 use const JSON_THROW_ON_ERROR;
@@ -43,7 +43,11 @@ class SimpleApiEmulatorContext implements Context, ApiEmulatorAwareContext
             return;
         }
 
-        $diff = (new Differ(new UnifiedDiffOutputBuilder("\n--- Expected\n+++ Actual\n")))
+        $diff = (new Differ(new StrictUnifiedDiffOutputBuilder([
+            'header'                  => "--- Expected\n+++ Actual\n",
+            'addLineNumbers'          => false,
+            'emitNoLineEndEofWarning' => false,
+        ])))
             ->diff(
                 json_encode($expected, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR),
                 json_encode($request->parsed_body, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)
