@@ -163,10 +163,10 @@ class ScenarioPlaceholderArgumentTransformerTest extends TestCase
     private function stubDefinitionCall(): DefinitionCall
     {
         return new DefinitionCall(
-            $this->getMockBuilder(Environment::class)->disableOriginalConstructor()->getMock(),
-            $this->getMockBuilder(FeatureNode::class)->disableOriginalConstructor()->getMock(),
-            $this->getMockBuilder(StepNode::class)->disableOriginalConstructor()->getMock(),
-            $this->getMockBuilder(Definition::class)->disableOriginalConstructor()->getMock(),
+            $this->createStub(Environment::class),
+            $this->createStub(FeatureNode::class),
+            $this->createStub(StepNode::class),
+            $this->createStub(Definition::class),
             []
         );
     }
